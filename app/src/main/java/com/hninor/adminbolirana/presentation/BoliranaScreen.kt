@@ -96,7 +96,8 @@ fun BoliranaApp(
             if (currentScreen == CupcakeScreen.ListaChicos) {
                 FloatingActionButton(onClick = {
                     viewModel.clearNuevoChico()
-                    navController.navigate(CupcakeScreen.CrearChico.name) }) {
+                    navController.navigate(CupcakeScreen.CrearChico.name)
+                }) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }
@@ -165,7 +166,7 @@ fun BoliranaApp(
                     deudaTotal = viewModel.getDeudaTotal(),
                     onRepetirChicoCliked = {
                         viewModel.crearChico()
-                        navController.navigate(CupcakeScreen.ChicoEnJuego.name){
+                        navController.navigate(CupcakeScreen.ChicoEnJuego.name) {
                             popUpTo(CupcakeScreen.ListaChicos.name)
                         }
                     },
