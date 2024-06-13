@@ -6,8 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hninor.adminbolirana.data.ChicoDB
+import com.hninor.adminbolirana.data.ChicoRepository
 import com.hninor.adminbolirana.domain.Chico
 import com.hninor.adminbolirana.domain.Jugador
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.Date
 
@@ -25,7 +29,7 @@ fun String.clearOtherCharacters(): String {
     return this.replace("[^(0-9)]".toRegex(), "").trim()
 }
 
-class BoliranaViewModel : ViewModel() {
+class BoliranaViewModel (private val repository: ChicoRepository): ViewModel() {
 
 
     var valorChico by mutableStateOf(TextFieldValue(""))
@@ -70,6 +74,13 @@ class BoliranaViewModel : ViewModel() {
         )
     }
 
+
+    /**
+     * Launching a new coroutine to insert the data in a non-blocking way
+     */
+    fun insert(word: ChicoDB) = viewModelScope.launch {
+        repository.insert(word)
+    }
     fun agregarJugador() {
         val input = username.uppercase().trim()
         if (input.isNotEmpty()) {
