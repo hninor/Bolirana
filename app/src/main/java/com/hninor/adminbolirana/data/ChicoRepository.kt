@@ -2,8 +2,9 @@ package com.hninor.adminbolirana.data
 
 import androidx.annotation.WorkerThread
 import com.hninor.adminbolirana.domain.Chico
+import javax.inject.Inject
 
-class ChicoRepository(private val wordDao: ChicoDBDao) {
+class ChicoRepository @Inject constructor(private val wordDao: ChicoDBDao) {
 
 
     // By default Room runs suspend queries off the main thread, therefore, we don't need to

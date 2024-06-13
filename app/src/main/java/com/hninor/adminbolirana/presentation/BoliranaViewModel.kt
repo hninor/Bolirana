@@ -11,9 +11,11 @@ import com.hninor.adminbolirana.data.ChicoDB
 import com.hninor.adminbolirana.data.ChicoRepository
 import com.hninor.adminbolirana.domain.Chico
 import com.hninor.adminbolirana.domain.Jugador
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.Date
+import javax.inject.Inject
 
 
 fun Long.formatThousand(): String {
@@ -28,8 +30,8 @@ fun String.clearThousandFormat(): String {
 fun String.clearOtherCharacters(): String {
     return this.replace("[^(0-9)]".toRegex(), "").trim()
 }
-
-class BoliranaViewModel (private val repository: ChicoRepository): ViewModel() {
+@HiltViewModel
+class BoliranaViewModel @Inject constructor(private val repository: ChicoRepository): ViewModel() {
 
 
     var valorChico by mutableStateOf(TextFieldValue(""))

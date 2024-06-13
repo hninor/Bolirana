@@ -74,7 +74,7 @@ fun CupcakeAppBar(
 
 @Composable
 fun BoliranaApp(
-    viewModel: BoliranaViewModel = viewModel(),
+    viewModel: BoliranaViewModel,
     navController: NavHostController = rememberNavController()
 ) {
 

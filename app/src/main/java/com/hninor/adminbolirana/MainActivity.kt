@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -16,11 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.hninor.adminbolirana.presentation.BoliranaApp
+import com.hninor.adminbolirana.presentation.BoliranaViewModel
 import com.hninor.adminbolirana.ui.theme.AdminBoliranaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
+    private val viewModel: BoliranaViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -28,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AdminBoliranaTheme {
-                BoliranaApp()
+                BoliranaApp(viewModel)
             }
         }
 

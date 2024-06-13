@@ -90,7 +90,7 @@ fun ChicoItem(chico: Chico, onChicoCliked: (Chico) -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
             Text("Número de jugadores: ${chico.jugadores.size}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            Text("Valor del chico: ${chico.valorChico}")
+            Text("Valor del chico:  $ ${chico.valorChico.formatThousand()}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
             Text("Perdedor: ${chico.perdedor?.nombre ?: ""}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
