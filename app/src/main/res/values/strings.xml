@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Admin bolirana</string>
+
+    <string name="show_less">Show less</string>
+    <string name="show_more">Show more</string>
+    <string name="feathertop_content_description">bla</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="seleccione_perdedor">Seleccione el jugador que perdió el chico</string>
+    <string name="back_button">Back</string>
+    <string name="crear_chico">Crear nuevo chico</string>
+    <string name="chico_en_juego">Chico en juego</string>
+    <string name="lista_chicos">Lista de chicos</string>
+    <string name="resultado_chico">Resultado chico</string>
+    <string name="iniciar_chico">Iniciar chico</string>
+</resources>
