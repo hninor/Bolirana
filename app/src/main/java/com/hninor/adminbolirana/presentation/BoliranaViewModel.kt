@@ -7,6 +7,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.hninor.adminbolirana.data.ChicoDB
 import com.hninor.adminbolirana.data.ChicoRepository
 import com.hninor.adminbolirana.domain.Chico
@@ -30,8 +32,9 @@ fun String.clearThousandFormat(): String {
 fun String.clearOtherCharacters(): String {
     return this.replace("[^(0-9)]".toRegex(), "").trim()
 }
+
 @HiltViewModel
-class BoliranaViewModel @Inject constructor(private val repository: ChicoRepository): ViewModel() {
+class BoliranaViewModel @Inject constructor(private val repository: ChicoRepository) : ViewModel() {
 
 
     var valorChico by mutableStateOf(TextFieldValue(""))
@@ -62,6 +65,40 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         puntosChico = input
     }
 
+    init {
+        loadChicos()
+    }
+
+    fun loadChicos() {
+        viewModelScope.launch {
+            val listaChicosDB = repository.getAll()
+            listaChicos = listaChicosDB.map {
+                Chico(
+                    id = it.id,
+                    jugadores = getJugadores(it.jugadores),
+                    perdedor = getPerdedor(it.perdedor),
+                    valorChico = it.valorChico,
+                    fecha = it.fecha,
+                    puntosChico = it.puntosChico
+                )
+            }
+        }
+
+    }
+
+    private fun getPerdedor(perdedor: String?): Jugador? {
+        if (perdedor != null) {
+            return Jugador(perdedor)
+        }
+
+        return null
+    }
+
+    private fun getJugadores(jugadores: String): List<Jugador> {
+        val myType = object : TypeToken<List<String>>() {}.type
+        val lista = Gson().fromJson<List<String>>(jugadores, myType)
+        return lista.map { Jugador(it) }
+    }
 
 
     fun updateValorChico(input: TextFieldValue) {
@@ -83,6 +120,11 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
     fun insert(word: ChicoDB) = viewModelScope.launch {
         repository.insert(word)
     }
+
+    fun update(idChico: Long, pededor: String) = viewModelScope.launch {
+        repository.updatePerdedor(idChico, pededor)
+    }
+
     fun agregarJugador() {
         val input = username.uppercase().trim()
         if (input.isNotEmpty()) {
@@ -105,7 +147,11 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
             val puntos = if (puntosChico.isEmpty()) 0 else puntosChico.toInt()
             val lista = listaJugadores.map { Jugador(it) }
             val valor = valorChico.text.clearThousandFormat().clearThousandFormat().toLong()
-            val chico = Chico(listaChicos.size + 1, lista, null, valor, Date(), puntos)
+            val jugadores = Gson().toJson(listaJugadores)
+            val id = Date().time
+            val chicoDB = ChicoDB(id, null, valor, Date(), puntos, jugadores)
+            insert(chicoDB)
+            val chico = Chico(id, lista, null, valor, chicoDB.fecha, puntos)
             listaChicos = listaChicos + chico
             chicoSeleccionado = chico
             return true
@@ -132,6 +178,7 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
 
     fun terminarChico(name: String) {
         chicoSeleccionado.perdedor = chicoSeleccionado.jugadores.find { it.nombre == name }
+        update(chicoSeleccionado.id, name)
     }
 
     fun getDeudaTotal(): Long {
@@ -149,6 +196,16 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         listaJugadores = emptyList()
         puntosChico = ""
         valorChico = TextFieldValue("")
+    }
+
+    fun repetirChico() {
+        val jugadores = Gson().toJson(chicoSeleccionado.jugadores.map { it.nombre })
+        val id = Date().time
+        val chicoDB = ChicoDB(id, null, chicoSeleccionado.valorChico, Date(), chicoSeleccionado.puntosChico, jugadores)
+        insert(chicoDB)
+        val chico = chicoSeleccionado.copy(id = id, perdedor = null, fecha = chicoDB.fecha)
+        listaChicos = listaChicos + chico
+        chicoSeleccionado = chico
     }
 
 

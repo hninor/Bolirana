@@ -9,14 +9,18 @@ import androidx.room.Query
 @Dao
 interface ChicoDBDao {
     @Query("SELECT * FROM ChicoDB")
-    fun getAll(): List<ChicoDB>
+    suspend fun getAll(): List<ChicoDB>
 
     @Query("SELECT * FROM ChicoDB WHERE id IN (:userIds)")
     fun loadAllByIds(userIds: IntArray): List<ChicoDB>
 
+    @Query("UPDATE ChicoDB SET perdedor = :perdedor WHERE id = :id")
+    suspend fun update(perdedor: String, id: Long)
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(word: ChicoDB)
+
     @Insert
     fun insertAll(vararg users: ChicoDB)
 

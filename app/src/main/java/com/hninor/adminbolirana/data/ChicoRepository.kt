@@ -1,7 +1,6 @@
 package com.hninor.adminbolirana.data
 
 import androidx.annotation.WorkerThread
-import com.hninor.adminbolirana.domain.Chico
 import javax.inject.Inject
 
 class ChicoRepository @Inject constructor(private val wordDao: ChicoDBDao) {
@@ -14,5 +13,14 @@ class ChicoRepository @Inject constructor(private val wordDao: ChicoDBDao) {
     @WorkerThread
     suspend fun insert(word: ChicoDB) {
         wordDao.insert(word)
+    }
+
+    @WorkerThread
+    suspend fun updatePerdedor(idChico: Long, perdedor: String) {
+        wordDao.update(perdedor, idChico)
+    }
+    @WorkerThread
+    suspend fun getAll(): List<ChicoDB> {
+        return wordDao.getAll()
     }
 }

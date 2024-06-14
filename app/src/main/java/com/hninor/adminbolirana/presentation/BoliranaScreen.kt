@@ -165,7 +165,7 @@ fun BoliranaApp(
                     chico = viewModel.chicoSeleccionado,
                     deudaTotal = viewModel.getDeudaTotal(),
                     onRepetirChicoCliked = {
-                        viewModel.crearChico()
+                        viewModel.repetirChico()
                         navController.navigate(CupcakeScreen.ChicoEnJuego.name) {
                             popUpTo(CupcakeScreen.ListaChicos.name)
                         }
