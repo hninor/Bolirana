@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +40,6 @@ import com.hninor.adminbolirana.R
 import com.hninor.adminbolirana.domain.Chico
 import com.hninor.adminbolirana.domain.Jugador
 import com.hninor.adminbolirana.ui.theme.AdminBoliranaTheme
-import org.w3c.dom.Text
 import java.util.Date
 
 /**
@@ -53,8 +53,12 @@ fun ResultadoChicoScreen(
     deudaTotal: Long,
     onRepetirChicoCliked: () -> Unit,
     onNuevoChicoClicked: () -> Unit,
+    onPagarChico: (chico: Chico) -> Unit,
+    onPagoTotalDeuda: (jugador: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,6 +66,7 @@ fun ResultadoChicoScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
 
         Text(
             "${chico.perdedor?.nombre}",
@@ -76,15 +81,40 @@ fun ResultadoChicoScreen(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-        Text("Deuda chico: $ ${chico.valorChico.formatThousand()}", fontSize = 24.sp)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Deuda chico: $ ${chico.valorChico.formatThousand()}", fontSize = 24.sp)
+            Button(
+
+                onClick = {
+                    onPagarChico(chico)
+                }
+            ) {
+                Text(context.getString(R.string.pagar))
+            }
+        }
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-        Text(
-            "Deuda total: $ ${deudaTotal.formatThousand()}",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+
+            Text(
+                "Deuda total: $ ${deudaTotal.formatThousand()}",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Button(
+
+                onClick = {
+                    onPagoTotalDeuda(chico.perdedor?.nombre ?: "")
+                }
+            ) {
+                Text(context.getString(R.string.pagar))
+            }
+        }
+
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+
+
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(
@@ -121,6 +151,8 @@ fun ResultadoChicoPreview() {
             50000,
             onRepetirChicoCliked = {},
             onNuevoChicoClicked = {},
+            onPagarChico = {},
+            onPagoTotalDeuda = {},
             modifier = Modifier
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_medium))

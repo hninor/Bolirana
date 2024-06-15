@@ -217,5 +217,15 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         chicoSeleccionado = chico
     }
 
+    fun pagarChico(chico: Chico) {
+        val chicoAPagar = listaChicos.find { it.id == chico.id }
+        chicoAPagar?.pendienteDePago = false
+        updatePendientePago(chico.id, false)
+    }
+
+    fun updatePendientePago(idChico: Long, pendientePago: Boolean) = viewModelScope.launch {
+        repository.updatePendientePago(idChico, pendientePago)
+    }
+
 
 }

@@ -11,5 +11,6 @@ data class ChicoDB(
     val valorChico: Long,
     val fecha: Date,
     val puntosChico: Int,
-    val jugadores: String
+    val jugadores: String,
+    var pendienteDePago: Boolean = true
 )

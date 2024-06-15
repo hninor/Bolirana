@@ -23,4 +23,8 @@ class ChicoRepository @Inject constructor(private val wordDao: ChicoDBDao) {
     suspend fun getAll(): List<ChicoDB> {
         return wordDao.getAll()
     }
+    @WorkerThread
+    suspend fun updatePendientePago(idChico: Long, pendientePago: Boolean) {
+        wordDao.updatePendientePago(pendientePago, idChico)
+    }
 }

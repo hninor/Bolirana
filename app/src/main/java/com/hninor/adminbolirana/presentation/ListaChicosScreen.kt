@@ -94,6 +94,8 @@ fun ChicoItem(chico: Chico, onChicoCliked: (Chico) -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
             Text("Perdedor: ${chico.perdedor?.nombre ?: ""}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+
+            Text(if (chico.pendienteDePago) "PENDIENTE PAGO" else "PAGADO")
             Row(
                 modifier = Modifier
                     .fillMaxWidth(), horizontalArrangement = Arrangement.End

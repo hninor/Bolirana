@@ -18,6 +18,9 @@ interface ChicoDBDao {
     suspend fun update(perdedor: String, id: Long)
 
 
+    @Query("UPDATE ChicoDB SET pendienteDePago = :pendientePago WHERE id = :id")
+    suspend fun updatePendientePago(pendientePago: Boolean, id: Long)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(word: ChicoDB)
 

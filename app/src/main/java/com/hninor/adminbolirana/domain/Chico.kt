@@ -10,5 +10,5 @@ data class Chico(
     val fecha: Date,
     val puntosChico: Int,
     val orden: Int,
-    val pendienteDePago: Boolean = false
+    var pendienteDePago: Boolean = true
 )
