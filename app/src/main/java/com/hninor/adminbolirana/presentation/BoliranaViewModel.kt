@@ -72,6 +72,7 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
     fun loadChicos() {
         viewModelScope.launch {
             val listaChicosDB = repository.getAll()
+            var count = 0
             listaChicos = listaChicosDB.map {
                 Chico(
                     id = it.id,
@@ -79,9 +80,10 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
                     perdedor = getPerdedor(it.perdedor),
                     valorChico = it.valorChico,
                     fecha = it.fecha,
-                    puntosChico = it.puntosChico
+                    puntosChico = it.puntosChico,
+                    orden = ++count
                 )
-            }
+            }.reversed()
         }
 
     }
@@ -151,8 +153,8 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
             val id = Date().time
             val chicoDB = ChicoDB(id, null, valor, Date(), puntos, jugadores)
             insert(chicoDB)
-            val chico = Chico(id, lista, null, valor, chicoDB.fecha, puntos)
-            listaChicos = listaChicos + chico
+            val chico = Chico(id, lista, null, valor, chicoDB.fecha, puntos, listaChicos.size + 1)
+            listaChicos = (listaChicos.reversed() + chico).reversed()
             chicoSeleccionado = chico
             return true
         } else {
@@ -201,7 +203,14 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
     fun repetirChico() {
         val jugadores = Gson().toJson(chicoSeleccionado.jugadores.map { it.nombre })
         val id = Date().time
-        val chicoDB = ChicoDB(id, null, chicoSeleccionado.valorChico, Date(), chicoSeleccionado.puntosChico, jugadores)
+        val chicoDB = ChicoDB(
+            id,
+            null,
+            chicoSeleccionado.valorChico,
+            Date(),
+            chicoSeleccionado.puntosChico,
+            jugadores
+        )
         insert(chicoDB)
         val chico = chicoSeleccionado.copy(id = id, perdedor = null, fecha = chicoDB.fecha)
         listaChicos = listaChicos + chico

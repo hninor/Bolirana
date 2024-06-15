@@ -39,6 +39,7 @@ import com.hninor.adminbolirana.R
 import com.hninor.adminbolirana.domain.Chico
 import com.hninor.adminbolirana.domain.Jugador
 import com.hninor.adminbolirana.ui.theme.AdminBoliranaTheme
+import org.w3c.dom.Text
 import java.util.Date
 
 /**
@@ -116,7 +117,7 @@ fun ResultadoChicoPreview() {
     AdminBoliranaTheme {
         ResultadoChicoScreen(
 
-            Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000),
+            Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000, 1),
             50000,
             onRepetirChicoCliked = {},
             onNuevoChicoClicked = {},

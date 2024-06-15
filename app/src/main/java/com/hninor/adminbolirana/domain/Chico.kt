@@ -8,5 +8,7 @@ data class Chico(
     var perdedor: Jugador?,
     val valorChico: Long,
     val fecha: Date,
-    val puntosChico: Int
+    val puntosChico: Int,
+    val orden: Int,
+    val pendienteDePago: Boolean = false
 )

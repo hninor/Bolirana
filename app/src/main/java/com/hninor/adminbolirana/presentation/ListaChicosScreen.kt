@@ -86,7 +86,7 @@ fun ChicoItem(chico: Chico, onChicoCliked: (Chico) -> Unit) {
             }
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
-            Text("Chico No. ${chico.id}", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("Chico No. ${chico.orden}", fontSize = 30.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
             Text("Número de jugadores: ${chico.jugadores.size}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
@@ -117,8 +117,8 @@ fun ListaChicosPreview() {
     AdminBoliranaTheme {
         ListaChicosScreen(
             listOf(
-                Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000),
-                Chico(2, listOf(Jugador("Paola")), null, 1000L, Date(), 5000)
+                Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000, 1),
+                Chico(2, listOf(Jugador("Paola")), null, 1000L, Date(), 5000, 2)
             ),
             onChicoCliked = {},
             onNextButtonClicked = {},

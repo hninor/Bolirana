@@ -100,7 +100,7 @@ fun ChicoEnJuegoScreen(
 fun ChicoEnJuegoPreview() {
     AdminBoliranaTheme {
         ChicoEnJuegoScreen(
-            Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000),
+            Chico(1, listOf(Jugador("Henry")), null, 1000L, Date(), 5000, 1),
             onPerdedorConfirmadoClicked = {},
             modifier = Modifier
                 .fillMaxSize()
