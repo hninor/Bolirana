@@ -81,7 +81,8 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
                     valorChico = it.valorChico,
                     fecha = it.fecha,
                     puntosChico = it.puntosChico,
-                    orden = ++count
+                    orden = ++count,
+                    pendienteDePago = it.pendienteDePago
                 )
             }.reversed()
         }
@@ -212,8 +213,8 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
             jugadores
         )
         insert(chicoDB)
-        val chico = chicoSeleccionado.copy(id = id, perdedor = null, fecha = chicoDB.fecha)
-        listaChicos = listaChicos + chico
+        val chico = chicoSeleccionado.copy(id = id, perdedor = null, fecha = chicoDB.fecha, orden = listaChicos.size + 1)
+        listaChicos = (listaChicos.reversed() + chico).reversed()
         chicoSeleccionado = chico
     }
 
@@ -221,10 +222,21 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         val chicoAPagar = listaChicos.find { it.id == chico.id }
         chicoAPagar?.pendienteDePago = false
         updatePendientePago(chico.id, false)
+        message = "Chico pagado"
     }
 
     fun updatePendientePago(idChico: Long, pendientePago: Boolean) = viewModelScope.launch {
         repository.updatePendientePago(idChico, pendientePago)
+    }
+
+    fun pagarDeudaTotal(jugador: String) {
+        val listaChicosPerdidos = listaChicos.filter { it.perdedor?.nombre == jugador }
+        listaChicosPerdidos.forEach {
+            updatePendientePago(it.id, false)
+            it.pendienteDePago = false
+        }
+        message = "Deuda pagada"
+
     }
 
 

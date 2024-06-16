@@ -179,7 +179,7 @@ fun BoliranaApp(
                         viewModel.pagarChico(it)
                     },
                     onPagoTotalDeuda = {
-
+                        viewModel.pagarDeudaTotal(it)
                     },
 
                     modifier = Modifier.fillMaxHeight()
