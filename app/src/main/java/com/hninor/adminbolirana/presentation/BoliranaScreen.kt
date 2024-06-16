@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +34,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -50,12 +53,13 @@ fun CupcakeAppBar(
     currentScreen: CupcakeScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    goToListaDeudas: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
         modifier = modifier,
         navigationIcon = {
@@ -66,6 +70,14 @@ fun CupcakeAppBar(
                         contentDescription = stringResource(R.string.back_button)
                     )
                 }
+            }
+        },
+        actions = {
+            IconButton(onClick = { goToListaDeudas() }) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description"
+                )
             }
         }
     )
@@ -88,7 +100,13 @@ fun BoliranaApp(
             CupcakeAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                goToListaDeudas = {
+                    viewModel.loadDeudas()
+                    navController.navigate(CupcakeScreen.ListaDeudas.name) {
+                        popUpTo(CupcakeScreen.ListaChicos.name)
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -185,19 +203,14 @@ fun BoliranaApp(
                     modifier = Modifier.fillMaxHeight()
                 )
             }
-            /*
 
-         composable(route = CupcakeScreen.Summary.name) {
-             val context = LocalContext.current
-             OrderSummaryScreen(
-                 orderUiState = uiState,
-                 onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
-                 onSendButtonClicked = { subject: String, summary: String ->
-                     shareOrder(context, subject, summary)
-                 },
-                 modifier = Modifier.fillMaxHeight()
-             )
-         }*/
+
+            composable(route = CupcakeScreen.ListaDeudas.name) {
+                val context = LocalContext.current
+                ListaDeudasScreen(lista = viewModel.listaDeudas, onDeudaCliked = {
+
+                })
+            }
         }
     }
 }
@@ -216,5 +229,6 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     CrearChico(title = R.string.crear_chico),
     ChicoEnJuego(title = R.string.chico_en_juego),
     ListaChicos(title = R.string.lista_chicos),
-    ResultadoChico(title = R.string.resultado_chico)
+    ResultadoChico(title = R.string.resultado_chico),
+    ListaDeudas(title = R.string.lista_deudas)
 }

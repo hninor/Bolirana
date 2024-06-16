@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken
 import com.hninor.adminbolirana.data.ChicoDB
 import com.hninor.adminbolirana.data.ChicoRepository
 import com.hninor.adminbolirana.domain.Chico
+import com.hninor.adminbolirana.domain.Deuda
 import com.hninor.adminbolirana.domain.Jugador
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -55,6 +56,9 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
     var listaChicos by mutableStateOf(listOf<Chico>())
         private set
 
+    var listaDeudas by mutableStateOf(listOf<Deuda>())
+        private set
+
     lateinit var chicoSeleccionado: Chico
 
     fun updateUsername(input: String) {
@@ -67,6 +71,22 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
 
     init {
         loadChicos()
+    }
+
+    fun loadDeudas() {
+        val mutableList = mutableListOf<Deuda>()
+        val chicosSinPagar = listaChicos.filter { it.perdedor != null && it.pendienteDePago }
+        val deudasAgrupadas = chicosSinPagar.groupBy { it.perdedor }
+        deudasAgrupadas.forEach { jugador, chicosPerdidos ->
+
+            mutableList.add(
+                Deuda(
+                    jugador = jugador?.nombre ?: "",
+                    chicosPerdidos = chicosPerdidos.size,
+                    deudaTotal = chicosPerdidos.sumOf { it.valorChico })
+            )
+        }
+        listaDeudas = mutableList
     }
 
     fun loadChicos() {
@@ -213,7 +233,12 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
             jugadores
         )
         insert(chicoDB)
-        val chico = chicoSeleccionado.copy(id = id, perdedor = null, fecha = chicoDB.fecha, orden = listaChicos.size + 1)
+        val chico = chicoSeleccionado.copy(
+            id = id,
+            perdedor = null,
+            fecha = chicoDB.fecha,
+            orden = listaChicos.size + 1
+        )
         listaChicos = (listaChicos.reversed() + chico).reversed()
         chicoSeleccionado = chico
     }
