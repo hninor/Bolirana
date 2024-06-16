@@ -1,5 +1,6 @@
 package com.hninor.adminbolirana.presentation
 
+import android.os.Build
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
@@ -80,15 +81,28 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         val mutableList = mutableListOf<Deuda>()
         val chicosSinPagar = listaChicos.filter { it.perdedor != null && it.pendienteDePago }
         val deudasAgrupadas = chicosSinPagar.groupBy { it.perdedor }
-        deudasAgrupadas.forEach { jugador, chicosPerdidos ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            deudasAgrupadas.forEach { jugador, chicosPerdidos ->
 
-            mutableList.add(
-                Deuda(
-                    jugador = jugador?.nombre ?: "",
-                    chicosPerdidos = chicosPerdidos.size,
-                    deudaTotal = chicosPerdidos.sumOf { it.valorChico })
-            )
+                mutableList.add(
+                    Deuda(
+                        jugador = jugador?.nombre ?: "",
+                        chicosPerdidos = chicosPerdidos.size,
+                        deudaTotal = chicosPerdidos.sumOf { it.valorChico })
+                )
+            }
+        } else {
+            for (entry in deudasAgrupadas.entries.iterator()) {
+
+                mutableList.add(
+                    Deuda(
+                        jugador = entry.key?.nombre ?: "",
+                        chicosPerdidos = entry.value.size,
+                        deudaTotal = entry.value.sumOf { it.valorChico })
+                )
+            }
         }
+
         listaDeudas = mutableList
     }
 
