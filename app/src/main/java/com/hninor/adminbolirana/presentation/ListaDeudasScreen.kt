@@ -16,9 +16,7 @@
 package com.hninor.adminbolirana.presentation
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,18 +29,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hninor.adminbolirana.MyAlertDialog
 import com.hninor.adminbolirana.R
-import com.hninor.adminbolirana.domain.Chico
 import com.hninor.adminbolirana.domain.Deuda
-import com.hninor.adminbolirana.domain.Jugador
 import com.hninor.adminbolirana.ui.theme.AdminBoliranaTheme
-import java.util.Date
 
 /**
  * Composable that allows the user to select the desired cupcake quantity and expects
@@ -55,7 +53,6 @@ fun ListaDeudasScreen(
     onDeudaCliked: (Deuda) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
 
 
     LazyColumn(
@@ -74,6 +71,8 @@ fun ListaDeudasScreen(
 
 @Composable
 fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
+    val openDialog = remember { mutableStateOf(false) }
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary
@@ -82,7 +81,7 @@ fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable {
-                onDeudaCliked(deuda)
+                openDialog.value = true
             }
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
@@ -95,6 +94,14 @@ fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
         }
 
 
+    }
+
+    MyAlertDialog(
+        "Atención",
+        "¿Recibió $ ${deuda.deudaTotal.formatThousand()} pesos?",
+        openDialog
+    ) {
+        onDeudaCliked(deuda)
     }
 }
 

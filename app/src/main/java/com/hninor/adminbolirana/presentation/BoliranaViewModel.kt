@@ -1,5 +1,7 @@
 package com.hninor.adminbolirana.presentation
 
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -37,6 +39,7 @@ fun String.clearOtherCharacters(): String {
 @HiltViewModel
 class BoliranaViewModel @Inject constructor(private val repository: ChicoRepository) : ViewModel() {
 
+    val snackbarHostState = SnackbarHostState()
 
     var valorChico by mutableStateOf(TextFieldValue(""))
         private set
@@ -247,7 +250,7 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         val chicoAPagar = listaChicos.find { it.id == chico.id }
         chicoAPagar?.pendienteDePago = false
         updatePendientePago(chico.id, false)
-        message = "Chico pagado"
+        showMessage("Chico pagado")
     }
 
     fun updatePendientePago(idChico: Long, pendientePago: Boolean) = viewModelScope.launch {
@@ -260,8 +263,15 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
             updatePendientePago(it.id, false)
             it.pendienteDePago = false
         }
-        message = "Deuda pagada"
+        showMessage("Deuda pagada")
 
+    }
+
+    fun showMessage(message: String) = viewModelScope.launch {
+        snackbarHostState.showSnackbar(
+            message = message,
+            duration = SnackbarDuration.Short
+        )
     }
 
 

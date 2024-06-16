@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -119,7 +120,8 @@ fun BoliranaApp(
                 }
             }
 
-        }
+        },
+        snackbarHost = { SnackbarHost(viewModel.snackbarHostState) },
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -208,7 +210,8 @@ fun BoliranaApp(
             composable(route = CupcakeScreen.ListaDeudas.name) {
                 val context = LocalContext.current
                 ListaDeudasScreen(lista = viewModel.listaDeudas, onDeudaCliked = {
-
+                    viewModel.pagarDeudaTotal(it.jugador)
+                    viewModel.loadDeudas()
                 })
             }
         }
