@@ -23,18 +23,22 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -86,6 +90,7 @@ fun NuevoChicoScreen(
 
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = viewModel.puntosChico,
                 onValueChange = { username -> viewModel.updatePuntosChico(username) },
                 label = { Text("Ingrese puntos del chico") },
@@ -98,6 +103,7 @@ fun NuevoChicoScreen(
                 )
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = viewModel.valorChico,
                 onValueChange = { valor -> viewModel.updateValorChico(valor) },
                 label = { Text("Ingrese valor del chico") },
@@ -108,22 +114,28 @@ fun NuevoChicoScreen(
                 singleLine = true
 
             )
-            OutlinedTextField(
-                value = viewModel.username,
-                onValueChange = { username -> viewModel.updateUsername(username) },
-                label = { Text("Ingrese jugador") },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        viewModel.agregarJugador()
-                    }
-                ),
-                singleLine = true
-            )
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = viewModel.username,
+                    onValueChange = { username -> viewModel.updateUsername(username) },
+                    label = { Text("Ingrese jugador") },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    singleLine = true
+                )
+                IconButton(
+                    onClick = { viewModel.agregarJugador() },
+                    modifier = Modifier.size(60.dp),
+                ){
+                    Icon(imageVector = Icons.Default.PersonAdd, contentDescription = "Settings")
+                }
+
+            }
+
 
 
 

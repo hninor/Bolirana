@@ -64,6 +64,7 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
         private set
 
     lateinit var chicoSeleccionado: Chico
+    lateinit var deudaSeleccionada: Deuda
 
     fun updateUsername(input: String) {
         username = input
@@ -88,7 +89,10 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
                     Deuda(
                         jugador = jugador?.nombre ?: "",
                         chicosPerdidos = chicosPerdidos.size,
-                        deudaTotal = chicosPerdidos.sumOf { it.valorChico })
+                        deudaTotal = chicosPerdidos.sumOf { it.valorChico },
+                        listaChicos = chicosPerdidos
+                    )
+
                 )
             }
         } else {
@@ -98,7 +102,9 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
                     Deuda(
                         jugador = entry.key?.nombre ?: "",
                         chicosPerdidos = entry.value.size,
-                        deudaTotal = entry.value.sumOf { it.valorChico })
+                        deudaTotal = entry.value.sumOf { it.valorChico },
+                        listaChicos = entry.value
+                    )
                 )
             }
         }
@@ -163,6 +169,15 @@ class BoliranaViewModel @Inject constructor(private val repository: ChicoReposit
 
     fun update(idChico: Long, pededor: String) = viewModelScope.launch {
         repository.updatePerdedor(idChico, pededor)
+    }
+
+    fun deleteAll() = viewModelScope.launch {
+        repository.delleteAll()
+    }
+
+    fun deleteChicos() {
+        deleteAll()
+        listaChicos = emptyList()
     }
 
     fun agregarJugador() {

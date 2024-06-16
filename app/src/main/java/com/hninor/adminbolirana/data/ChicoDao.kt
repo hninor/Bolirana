@@ -29,4 +29,7 @@ interface ChicoDBDao {
 
     @Delete
     fun delete(user: ChicoDB)
+
+    @Query("DELETE FROM ChicoDB")
+    suspend fun deleteAll()
 }

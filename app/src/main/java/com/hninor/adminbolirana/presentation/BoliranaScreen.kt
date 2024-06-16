@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,8 +35,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.hninor.adminbolirana.MyAlertDialog
 import com.hninor.adminbolirana.R
 
 /**
@@ -55,6 +58,7 @@ fun CupcakeAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     goToListaDeudas: () -> Unit,
+    deleteChicos: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -80,6 +84,13 @@ fun CupcakeAppBar(
                     contentDescription = "Localized description"
                 )
             }
+
+            IconButton(onClick = { deleteChicos() }) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Localized description"
+                )
+            }
         }
     )
 }
@@ -98,6 +109,7 @@ fun BoliranaApp(
     )
     Scaffold(
         topBar = {
+            val openDialog = remember { mutableStateOf(false) }
             CupcakeAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
@@ -107,8 +119,19 @@ fun BoliranaApp(
                     navController.navigate(CupcakeScreen.ListaDeudas.name) {
                         popUpTo(CupcakeScreen.ListaChicos.name)
                     }
+                },
+                deleteChicos = {
+                    openDialog.value = true
                 }
             )
+
+            MyAlertDialog(
+                "Atención",
+                "¿Está seguro de eliminar todos los chicos?",
+                openDialog
+            ) {
+                viewModel.deleteChicos()
+            }
         },
         floatingActionButton = {
             if (currentScreen == CupcakeScreen.ListaChicos) {
@@ -209,10 +232,28 @@ fun BoliranaApp(
 
             composable(route = CupcakeScreen.ListaDeudas.name) {
                 val context = LocalContext.current
-                ListaDeudasScreen(lista = viewModel.listaDeudas, onDeudaCliked = {
+                ListaDeudasScreen(lista = viewModel.listaDeudas, onPagarDeudaCliked = {
                     viewModel.pagarDeudaTotal(it.jugador)
                     viewModel.loadDeudas()
+                }, onOpenDetailClicked = {
+                    viewModel.deudaSeleccionada = it
+                    navController.navigate(CupcakeScreen.DetalleDeudas.name)
                 })
+            }
+
+            composable(route = CupcakeScreen.DetalleDeudas.name) {
+                ListaChicosScreen(
+                    viewModel.deudaSeleccionada.listaChicos,
+                    onChicoCliked = {
+
+                    },
+                    onNextButtonClicked = {
+
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
             }
         }
     }
@@ -233,5 +274,6 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     ChicoEnJuego(title = R.string.chico_en_juego),
     ListaChicos(title = R.string.lista_chicos),
     ResultadoChico(title = R.string.resultado_chico),
-    ListaDeudas(title = R.string.lista_deudas)
+    ListaDeudas(title = R.string.lista_deudas),
+    DetalleDeudas(title = R.string.detalle_deudas)
 }

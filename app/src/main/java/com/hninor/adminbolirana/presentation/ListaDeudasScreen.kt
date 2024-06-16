@@ -15,8 +15,9 @@
  */
 package com.hninor.adminbolirana.presentation
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +34,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,7 +59,8 @@ import com.hninor.adminbolirana.ui.theme.AdminBoliranaTheme
 @Composable
 fun ListaDeudasScreen(
     lista: List<Deuda>,
-    onDeudaCliked: (Deuda) -> Unit,
+    onPagarDeudaCliked: (Deuda) -> Unit,
+    onOpenDetailClicked: (Deuda) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -62,7 +72,7 @@ fun ListaDeudasScreen(
     ) {
         items(items = lista) { chico ->
 
-            DeudaItem(chico, onDeudaCliked)
+            DeudaItem(chico, onPagarDeudaCliked, onOpenDetailClicked)
         }
     }
 
@@ -70,7 +80,11 @@ fun ListaDeudasScreen(
 }
 
 @Composable
-fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
+fun DeudaItem(
+    deuda: Deuda,
+    onPagarDeudaCliked: (Deuda) -> Unit,
+    onOpenDetailClicked: (Deuda) -> Unit
+) {
     val openDialog = remember { mutableStateOf(false) }
 
     Card(
@@ -80,9 +94,7 @@ fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clickable {
-                openDialog.value = true
-            }
+
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
             Text("JUGADOR: ${deuda.jugador}", fontSize = 30.sp, fontWeight = FontWeight.Bold)
@@ -90,18 +102,48 @@ fun DeudaItem(deuda: Deuda, onDeudaCliked: (Deuda) -> Unit) {
             Text("Chicos perdidos: ${deuda.chicosPerdidos}")
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
             Text("Deuda total:  $ ${deuda.deudaTotal.formatThousand()}")
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ClickableText(
+                    style = TextStyle(
+                        color = White,
+                        fontSize = 26.sp,
+                        fontFamily = FontFamily.Cursive
+                    ),
+                    text = AnnotatedString(stringResource(id = R.string.ver_detalle)),
+                    onClick = {
+                        onOpenDetailClicked(deuda)
+                    })
+
+                ClickableText(
+                    style = TextStyle(
+                        color = White,
+                        fontSize = 26.sp,
+                        fontFamily = FontFamily.Cursive
+                    ),
+                    text = AnnotatedString(stringResource(id = R.string.pagar)),
+                    onClick = {
+                        openDialog.value = true
+                    })
+            }
+
 
         }
 
 
     }
 
+
+
     MyAlertDialog(
         "Atención",
         "¿Recibió $ ${deuda.deudaTotal.formatThousand()} pesos?",
         openDialog
     ) {
-        onDeudaCliked(deuda)
+        onPagarDeudaCliked(deuda)
     }
 }
 
@@ -112,10 +154,11 @@ fun ListaDeudasPreview() {
     AdminBoliranaTheme {
         ListaDeudasScreen(
             listOf(
-                Deuda("HENRY", 3, 5000L),
-                Deuda("JUAN", 4, 50000L),
+                Deuda("HENRY", 3, 5000L, emptyList()),
+                Deuda("JUAN", 4, 50000L, emptyList()),
             ),
-            onDeudaCliked = {},
+            onPagarDeudaCliked = {},
+            onOpenDetailClicked = {},
             modifier = Modifier
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_medium))

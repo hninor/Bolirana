@@ -14,4 +14,7 @@
     <string name="iniciar_chico">Iniciar chico</string>
     <string name="pagar">Pagar</string>
     <string name="lista_deudas">Lista de deudas</string>
+    <string name="agregar">Agregar</string>
+    <string name="ver_detalle">Ver detalle</string>
+    <string name="detalle_deudas">Detalle de deudas</string>
 </resources>
